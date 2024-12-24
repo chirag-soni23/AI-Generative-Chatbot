@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import {connectDb } from './db/db.js';
 import userRoutes from './routes/userRoutes.js';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 
 connectDb();
@@ -11,6 +12,7 @@ connectDb();
 
 const app = express(); 
 
+app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
