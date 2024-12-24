@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Login = () => {
+const Register = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white p-4">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-center">Register</h2>
         <form className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-2" htmlFor="email">Email</label>
@@ -33,13 +33,13 @@ const Login = () => {
             type="submit"
             className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            Login
+            Register
           </button>
         </form>
         <p className="mt-4 text-center text-sm">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-blue-400 hover:text-blue-300">
-            Create one
+          Already have an account?{' '}
+          <Link to="/login" className="text-blue-400 hover:text-blue-300">
+            Login
           </Link>
         </p>
       </div>
@@ -47,4 +47,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
