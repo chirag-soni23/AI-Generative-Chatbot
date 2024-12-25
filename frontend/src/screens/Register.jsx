@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../config/axios.js';
 import { toast } from 'react-hot-toast';  
+import { useUser } from '../context/user.context.jsx';
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const {setUser} = useUser();
 
   function submitHandler(e) {
     e.preventDefault();
@@ -17,6 +19,8 @@ const Register = () => {
       .then((res) => {
         console.log(res.data);
         toast.success("Registration successful!");
+        localStorage.setItem('token',res.data.token);
+        setUser(res.data.user);
         navigate('/');
       })
       .catch((err) => {
