@@ -1,34 +1,42 @@
 import React, { useState } from 'react';
-import { useUser } from '../context/user.context';
+// import { useUser } from '../context/user.context';
 
 const Home = () => {
-  const { user } = useUser();
+  // const { user } = useUser();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [projectName,setProjectName] = useState(null);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+  function createProject(e){
+    e.preventDefault();
+    console.log(projectName);
+  }
+
   return (
     <main className="p-4">
       <div className="projects">
         <button onClick={toggleModal} className="project p-4 border border-slate-300 rounded-md cursor-pointer">
-          New Project <i className="ri-links-line ml-1" ></i>
+          New Project <i className="ri-links-line ml-1"></i>
         </button>
       </div>
 
       {/* Modal - This will show when isModalOpen is true */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-md w-1/3">
+          <div className="bg-white p-6 rounded-md w-11/12 sm:w-1/2 md:w-1/3 lg:w-1/4">
             <h2 className="text-xl font-bold mb-4">Create a New Project</h2>
-            <form>
+            <form onSubmit={createProject}>
               <div className="mb-4">
                 <label htmlFor="projectName" className="block text-sm font-medium text-gray-700">
                   Project Name
                 </label>
                 <input
+                value={projectName}
+                onChange={(e)=>setProjectName(e.target.value)}
                   type="text"
                   required
                   id="projectName"
