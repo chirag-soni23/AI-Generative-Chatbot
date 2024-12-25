@@ -3,6 +3,7 @@ import 'dotenv/config.js';
 import morgan from 'morgan';
 import {connectDb } from './db/db.js';
 import userRoutes from './routes/userRoutes.js';
+import projectRoutes from './routes/projectRoutes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -23,5 +24,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/user',userRoutes);
+app.use('/api/project',projectRoutes);
 
 export default app;
