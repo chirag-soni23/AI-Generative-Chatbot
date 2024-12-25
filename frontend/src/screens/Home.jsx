@@ -14,7 +14,7 @@ const Home = () => {
     <main className="p-4">
       <div className="projects">
         <button onClick={toggleModal} className="project p-4 border border-slate-300 rounded-md cursor-pointer">
-          <i className="ri-links-line" ></i>
+          New Project <i className="ri-links-line ml-1" ></i>
         </button>
       </div>
 
@@ -30,6 +30,7 @@ const Home = () => {
                 </label>
                 <input
                   type="text"
+                  required
                   id="projectName"
                   className="mt-1 p-2 border border-slate-300 rounded-md w-full"
                 />
