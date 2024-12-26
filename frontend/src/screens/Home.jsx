@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../config/axios.js';
+import {useNavigate} from 'react-router-dom';
 // import { useUser } from '../context/user.context';
 
 const Home = () => {
@@ -7,7 +8,8 @@ const Home = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projectName, setProjectName] = useState(null);
-  const [project,setProject] = useState([])
+  const [project,setProject] = useState([]);
+  const navigate = useNavigate();
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -28,7 +30,7 @@ const Home = () => {
     }).catch((err)=>{
       console.log(err)
     })
-  },[])
+  },[]);
 
   return (
     <main className="p-4">
@@ -38,7 +40,12 @@ const Home = () => {
         </button>
         {
           project.map((project)=>{
-            return <div key={project._id} className='p-4 border border-slate-300 flex flex-col gap-2 rounded-md cursor-pointer min-w-52 hover:bg-slate-100'>
+            return <div onClick={()=>{
+              navigate(`/project`,{
+                state:{project}
+              });
+            }
+              } key={project._id} className='p-4 border border-slate-300 flex flex-col gap-2 rounded-md cursor-pointer min-w-52 hover:bg-slate-100'>
               <h2 className='font-semibold'>{project.name}</h2>
               <div className='flex gap-2'>
              <p> <i className="ri-user-line"></i> <small>Collaborators:</small></p>
