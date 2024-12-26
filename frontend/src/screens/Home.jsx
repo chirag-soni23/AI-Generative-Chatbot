@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from '../config/axios.js';
 // import { useUser } from '../context/user.context';
 
@@ -7,6 +7,7 @@ const Home = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projectName, setProjectName] = useState(null);
+  const [project,setProject] = useState([])
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -20,12 +21,32 @@ const Home = () => {
     console.log(projectName);
   }
 
+  useEffect(()=>{
+    axios.get('/project/all').then((res)=>{
+      setProject(res.data.projects);
+
+    }).catch((err)=>{
+      console.log(err)
+    })
+  },[])
+
   return (
     <main className="p-4">
-      <div className="projects">
+      <div className="projects flex flex-wrap gap-3">
         <button onClick={toggleModal} className="project p-4 border border-slate-300 rounded-md cursor-pointer">
           New Project <i className="ri-links-line ml-1"></i>
         </button>
+        {
+          project.map((project)=>{
+            return <div key={project._id} className='p-4 border border-slate-300 flex flex-col gap-2 rounded-md cursor-pointer min-w-52 hover:bg-slate-100'>
+              <h2 className='font-semibold'>{project.name}</h2>
+              <div className='flex gap-2'>
+             <p> <i className="ri-user-line"></i> <small>Collaborators:</small></p>
+                {project.users.length}
+              </div>
+            </div>
+          })
+        }
       </div>
 
       {/* Modal - This will show when isModalOpen is true */}
