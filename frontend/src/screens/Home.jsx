@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
+import axios from '../config/axios.js';
 // import { useUser } from '../context/user.context';
 
 const Home = () => {
   // const { user } = useUser();
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [projectName,setProjectName] = useState(null);
+  const [projectName, setProjectName] = useState(null);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  function createProject(e){
+  function createProject(e) {
     e.preventDefault();
+    axios.post('/project/create', { name: projectName }).then((res) => { console.log(res), setIsModalOpen(false).setProjectName("") }).catch((error) => {
+      console.log(error)
+    })
     console.log(projectName);
   }
 
@@ -35,8 +39,8 @@ const Home = () => {
                   Project Name
                 </label>
                 <input
-                value={projectName}
-                onChange={(e)=>setProjectName(e.target.value)}
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
                   type="text"
                   required
                   id="projectName"

@@ -15,7 +15,7 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
 
-    axios.post('/register', { email, password })
+    axios.post('/user/register', { email, password })
       .then((res) => {
         console.log(res.data);
         toast.success("Registration successful!");

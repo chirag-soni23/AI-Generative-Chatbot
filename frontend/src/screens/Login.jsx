@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    axios.post('/login', { email, password })
+    axios.post('/user/login', { email, password })
       .then((res) => {
         console.log(res.data);
         toast.success("Login successful!"); 
