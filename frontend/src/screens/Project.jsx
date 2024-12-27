@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from '../config/axios.js';
+import { initializeSocket } from '../config/socket.js';
 
 const Project = () => {
     const location = useLocation();
@@ -12,6 +13,7 @@ const Project = () => {
     // console.log(location.state);
 
     useEffect(() => {
+        initializeSocket();
         axios.get(`/project/get-project/${location.state.project._id}`).then(res=>{
             console.log(res.data.project)            
             setProject(res.data.project);
@@ -116,7 +118,7 @@ const Project = () => {
     {/* User List */}
     {project.users && project.users.map(user=>{
         return (
-            <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
+            <div key={user._id} className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
         <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
             <i className="ri-user-fill"></i>
         </div>
