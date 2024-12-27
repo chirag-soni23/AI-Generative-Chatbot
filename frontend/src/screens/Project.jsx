@@ -11,14 +11,14 @@ const Project = () => {
             {/* Sidebar Section */}
             <section className="relative bg-slate-300 flex flex-col h-full md:w-1/3 lg:w-1/4">
                 <header
-                    onClick={() => setIsSidePanelOpen(!isSidePanelOpen)}
+                    
                     className="flex justify-between items-center p-2 px-4 bg-slate-200 cursor-pointer"
                 >
                     <button className='flex gap-2'>
                     <i className="ri-add-fill mr-1"></i>
                     <p>Add Collaborator</p>
                     </button>
-                    <button className="p-2">
+                    <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className="p-2">
                         <i className="ri-group-fill"></i>
                     </button>
                 </header>
