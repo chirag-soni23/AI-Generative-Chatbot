@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from '../config/axios.js';
-import { initializeSocket } from '../config/socket.js';
+import { initializeSocket,receiveMessage} from '../config/socket.js';
 
 const Project = () => {
     const location = useLocation();
@@ -116,9 +116,9 @@ const Project = () => {
 
                     <div className="users flex flex-col gap-3 p-4">
     {/* User List */}
-    {project.users && project.users.map(user=>{
+    {project.users && project.users.map((user,index)=>{
         return (
-            <div key={user._id} className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
+            <div key={index} className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
         <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
             <i className="ri-user-fill"></i>
         </div>
