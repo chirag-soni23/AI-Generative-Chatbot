@@ -3,22 +3,42 @@ import { useLocation } from 'react-router-dom';
 
 const Project = () => {
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
     const location = useLocation();
     console.log(location.state);
+
+    // Sample users data
+    const users = [
+        { id: 1, name: 'User 1', email: 'user1@example.com' },
+        { id: 2, name: 'User 2', email: 'user2@example.com' },
+        { id: 3, name: 'User 3', email: 'user3@example.com' },
+        { id: 4, name: 'User 4', email: 'user4@example.com' },
+        { id: 5, name: 'User 5', email: 'user5@example.com' },
+        { id: 6, name: 'User 6', email: 'user6@example.com' },
+        { id: 7, name: 'User 7', email: 'user7@example.com' },
+    ];
+
+    const handleUserClick = (user) => {
+        setSelectedUser(user);  // Set selected user
+    };
 
     return (
         <main className="h-screen w-screen flex flex-col md:flex-row">
             {/* Sidebar Section */}
             <section className="relative bg-slate-300 flex flex-col h-full md:w-1/3 lg:w-1/4">
-                <header
-                    
-                    className="flex justify-between items-center p-2 px-4 bg-slate-200 cursor-pointer"
-                >
-                    <button className='flex gap-2'>
-                    <i className="ri-add-fill mr-1"></i>
-                    <p>Add Collaborator</p>
+                <header className="flex justify-between items-center p-2 px-4 bg-slate-200 cursor-pointer">
+                    <button
+                        className="flex gap-2"
+                        onClick={() => setIsModalOpen(true)}  // Open modal when button is clicked
+                    >
+                        <i className="ri-add-fill mr-1"></i>
+                        <p>Add Collaborator</p>
                     </button>
-                    <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className="p-2">
+                    <button
+                        onClick={() => setIsSidePanelOpen(!isSidePanelOpen)}
+                        className="p-2"
+                    >
                         <i className="ri-group-fill"></i>
                     </button>
                 </header>
@@ -90,7 +110,51 @@ const Project = () => {
                 </div>
             </section>
 
-            {/* modal */}
+            {/* Modal for selecting collaborators */}
+            {isModalOpen && (
+                <div className="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-20">
+                    <div className="modal-content bg-white p-4 rounded-lg w-80 md:w-96">
+                        <header className="flex justify-between items-center border-b pb-2">
+                            <h2 className="text-lg font-semibold">Select Collaborator</h2>
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="text-black text-xl"
+                            >
+                                <i className="ri-close-fill"></i>
+                            </button>
+                        </header>
+
+                        {/* Scrollable User List */}
+                        <div className="user-list mt-4 space-y-3 max-h-60 overflow-y-auto">
+                            {users.map((user) => (
+                                <div
+                                    key={user.id}
+                                    className={`user cursor-pointer flex items-center gap-2 p-2 rounded-md ${
+                                        selectedUser && selectedUser.id === user.id
+                                            ? 'bg-slate-400'  // Highlight selected user
+                                            : ''
+                                    }`}
+                                    onClick={() => handleUserClick(user)}
+                                >
+                                    <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
+                                        <i className="ri-user-fill"></i>
+                                    </div>
+                                    <h1 className="font-semibold text-lg">{user.name}</h1>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="flex justify-center mt-4">
+                            <button
+                                className="bg-blue-500 text-white py-2 px-4 rounded-md"
+                                disabled={!selectedUser}
+                            >
+                                Add Collaborator
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 };
