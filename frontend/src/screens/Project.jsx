@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from '../config/axios.js';
 import { initializeSocket,receiveMessage,sendMessage} from '../config/socket.js';
+import { useUser } from '../context/user.context.jsx';
 
 const Project = () => {
     const location = useLocation();
@@ -10,10 +11,18 @@ const Project = () => {
     const [selectedUsers, setSelectedUsers] = useState([]); 
     const [project,setProject] = useState(location.state.project)
     const [users, setUser] = useState([]);
-    // console.log(location.state);
+    const [message,setMessage] = useState('');
+    const {user} = useUser();
 
     useEffect(() => {
         initializeSocket(project._id);
+        receiveMessage('project-message',data=>{
+            console.log(data);
+        });
+
+
+
+
         axios.get(`/project/get-project/${location.state.project._id}`).then(res=>{
             console.log(res.data.project)            
             setProject(res.data.project);
@@ -52,6 +61,15 @@ const Project = () => {
         console.log('Selected Users:', selectedUsers); 
     }, [selectedUsers]);
 
+
+    const sendMessageHandler=()=>{
+       sendMessage('project-message',{
+        message,
+        sender: user._id
+       });
+       setMessage('');
+        
+    }
     return (
         <main className="h-screen w-screen flex flex-col md:flex-row">
             {/* Sidebar Section */}
@@ -87,12 +105,14 @@ const Project = () => {
 
                     {/* Input Box */}
                     <div className="w-full input-box flex items-center p-2 bg-white border-t">
-                        <input
+                        <input value={message}
+                        onChange={(e)=>{setMessage(e.target.value)}}
                             className="flex-grow p-2 px-4 border-none outline-none text-sm"
                             type="text"
                             placeholder="Enter message"
                         />
-                        <button className="p-2 text-blue-500">
+                        {/* send message */}
+                        <button onClick={sendMessageHandler} className="p-2 text-blue-500">
                             <i className="ri-send-plane-fill"></i>
                         </button>
                     </div>
