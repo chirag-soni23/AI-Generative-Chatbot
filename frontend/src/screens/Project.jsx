@@ -3,14 +3,19 @@ import { useLocation } from 'react-router-dom';
 import axios from '../config/axios.js';
 
 const Project = () => {
+    const location = useLocation();
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState([]); 
+    const [project,setProject] = useState(location.state.project)
     const [users, setUser] = useState([]);
-    const location = useLocation();
-    console.log(location.state);
+    // console.log(location.state);
 
     useEffect(() => {
+        axios.get(`/project/get-project/${location.state.project._id}`).then(res=>{
+            console.log(res.data.project)            
+            setProject(res.data.project);
+        })
         axios.get('/user/all').then((res) => {
             setUser(res.data.users);
         }).catch((err) => {
