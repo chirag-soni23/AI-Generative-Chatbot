@@ -4,16 +4,24 @@ let socketInstance = null;
 
 
 // initialize socket
-export const initializeSocket = () =>{
+export const initializeSocket = (projectId) =>{
     socketInstance = socket(import.meta.env.VITE_API_URI,{
         auth:{
             token: localStorage.getItem('token')
+        },
+        query:{
+            projectId
         }
     });
     return socketInstance;
 };
 
 // receive message
-export const receiveMessage = (eventName,data)=>{
-    socketInstance.emit(eventName,data)
+export const receiveMessage = (eventName,cb)=>{
+    socketInstance.emit(eventName,cb);
+};
+
+// send message
+export const sendMessage = (eventName,data)=>{
+    socketInstance.emit(eventName,data);
 };
