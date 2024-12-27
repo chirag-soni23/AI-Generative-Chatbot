@@ -6,39 +6,44 @@ const Project = () => {
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState([]); 
-    const [users,setUser] = useState([]);
+    const [users, setUser] = useState([]);
     const location = useLocation();
     console.log(location.state);
 
-    // // Sample users data
-    // const users = [
-    //     { id: 1, name: 'User 1', email: 'user1@example.com' },
-    //     { id: 2, name: 'User 2', email: 'user2@example.com' },
-    //     { id: 3, name: 'User 3', email: 'user3@example.com' },
-    //     { id: 4, name: 'User 4', email: 'user4@example.com' },
-    //     { id: 5, name: 'User 5', email: 'user5@example.com' },
-    //     { id: 6, name: 'User 6', email: 'user6@example.com' },
-    //     { id: 7, name: 'User 7', email: 'user7@example.com' },
-    // ];
-useEffect(()=>{
-    axios.get('/user/all').then((res)=>{
-        setUser(res.data.users);
-    }).catch((err)=>{
-        console.log(err)
-    })
-},[])
-    
+    useEffect(() => {
+        axios.get('/user/all').then((res) => {
+            setUser(res.data.users);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }, []);
 
+    function addCollaborators() {
+        axios.put('/project/add-user', {
+            projectId: location.state.project._id,
+            users: selectedUsers.map(user => user._id) // Send only user IDs
+        }).then(res => {
+            setIsModalOpen(false);
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+    
     const handleUserClick = (user) => {
         setSelectedUsers((prevSelectedUsers) => {
-            // Toggle selection: add if not selected, remove if selected
-            if (prevSelectedUsers.some((selectedUser) => selectedUser.id === user.id)) {
-                return prevSelectedUsers.filter((selectedUser) => selectedUser.id !== user.id);
+            if (prevSelectedUsers.some((selectedUser) => selectedUser._id === user._id)) {
+                // Remove user if already selected
+                return prevSelectedUsers.filter((selectedUser) => selectedUser._id !== user._id);
             } else {
+                // Add user if not selected
                 return [...prevSelectedUsers, user];
             }
         });
     };
+
+    useEffect(() => {
+        console.log('Selected Users:', selectedUsers); 
+    }, [selectedUsers]);
 
     return (
         <main className="h-screen w-screen flex flex-col md:flex-row">
@@ -47,7 +52,7 @@ useEffect(()=>{
                 <header className="flex justify-between items-center p-2 px-4 bg-slate-200 cursor-pointer">
                     <button
                         className="flex gap-2"
-                        onClick={() => setIsModalOpen(true)}  // Open modal when button is clicked
+                        onClick={() => setIsModalOpen(true)}  
                     >
                         <i className="ri-add-fill mr-1"></i>
                         <p>Add Collaborator</p>
@@ -62,15 +67,11 @@ useEffect(()=>{
 
                 {/* Conversation Area */}
                 <div className="conversation-area flex flex-grow flex-col">
-                    {/* Message Box */}
                     <div className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2">
-                        {/* Incoming Message */}
                         <div className="incoming-message flex flex-col max-w-xs gap-1 p-2 bg-slate-50 w-fit rounded-md">
                             <small className="opacity-65 text-xs">example@gmail.com</small>
                             <p className="text-sm break-words">Hello, How are you?</p>
                         </div>
-
-                        {/* Outgoing Message */}
                         <div className="outgoing-message flex flex-col max-w-xs ml-auto gap-1 p-2 bg-slate-200 w-fit rounded-md">
                             <small className="opacity-65 text-xs">example@gmail.com</small>
                             <p className="text-sm break-words">Hey, I am fine.</p>
@@ -96,7 +97,6 @@ useEffect(()=>{
                         isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
                 >
-                    {/* Close Button */}
                     <header className="flex justify-end bg-slate-200 px-3 py-2">
                         <button
                             onClick={() => setIsSidePanelOpen(false)}
@@ -106,24 +106,45 @@ useEffect(()=>{
                         </button>
                     </header>
 
-                    {/* User List */}
                     <div className="users flex flex-col gap-3 p-4">
-                        {/* User 1 */}
-                        <div className="user cursor-pointer hover:bg-slate-400 flex items-center gap-2 p-2 rounded-md">
-                            <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
-                                <i className="ri-user-fill"></i>
-                            </div>
-                            <h1 className="font-semibold text-lg text-white">Username</h1>
-                        </div>
+    {/* User List */}
+    <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
+        <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
+            <i className="ri-user-fill"></i>
+        </div>
+        <h1 className="font-semibold text-lg">User 1</h1>
+    </div>
 
-                        {/* User 2 */}
-                        <div className="user cursor-pointer hover:bg-slate-400 flex items-center gap-2 p-2 rounded-md">
-                            <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
-                                <i className="ri-user-fill"></i>
-                            </div>
-                            <h1 className="font-semibold text-lg text-white">User 2</h1>
-                        </div>
-                    </div>
+    <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
+        <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
+            <i className="ri-user-fill"></i>
+        </div>
+        <h1 className="font-semibold text-lg">User 2</h1>
+    </div>
+
+    <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
+        <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
+            <i className="ri-user-fill"></i>
+        </div>
+        <h1 className="font-semibold text-lg">User 3</h1>
+    </div>
+
+    <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
+        <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
+            <i className="ri-user-fill"></i>
+        </div>
+        <h1 className="font-semibold text-lg">User 4</h1>
+    </div>
+
+    <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
+        <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
+            <i className="ri-user-fill"></i>
+        </div>
+        <h1 className="font-semibold text-lg">User 5</h1>
+    </div>
+</div>
+
+
                 </div>
             </section>
 
@@ -162,9 +183,9 @@ useEffect(()=>{
                         </div>
 
                         <div className="flex justify-center mt-4">
-                            <button
+                            <button onClick={addCollaborators}
                                 className="bg-blue-500 text-white py-2 px-4 rounded-md"
-                                disabled={selectedUsers.length === 0} // Button enabled only if at least one user is selected
+                                disabled={selectedUsers.length === 0} 
                             >
                                 Add Collaborator
                             </button>
