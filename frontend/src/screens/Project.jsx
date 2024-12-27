@@ -102,7 +102,8 @@ const Project = () => {
                         isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
                 >
-                    <header className="flex justify-end bg-slate-200 px-3 py-2">
+                    <header className="flex justify-between items-center bg-slate-200 px-3 py-2">
+                        <h1 className='font-semibold text-lg'>Collaborators</h1>
                         <button
                             onClick={() => setIsSidePanelOpen(false)}
                             className="text-black text-xl p-2"
@@ -113,41 +114,19 @@ const Project = () => {
 
                     <div className="users flex flex-col gap-3 p-4">
     {/* User List */}
-    <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
+    {project.users && project.users.map(user=>{
+        return (
+            <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
         <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
             <i className="ri-user-fill"></i>
         </div>
-        <h1 className="font-semibold text-lg">User 1</h1>
+        <h1 className="font-semibold text-lg">{user.email}</h1>
     </div>
+        )
+    })}
 
-    <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
-        <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
-            <i className="ri-user-fill"></i>
-        </div>
-        <h1 className="font-semibold text-lg">User 2</h1>
-    </div>
-
-    <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
-        <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
-            <i className="ri-user-fill"></i>
-        </div>
-        <h1 className="font-semibold text-lg">User 3</h1>
-    </div>
-
-    <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
-        <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
-            <i className="ri-user-fill"></i>
-        </div>
-        <h1 className="font-semibold text-lg">User 4</h1>
-    </div>
-
-    <div className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
-        <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
-            <i className="ri-user-fill"></i>
-        </div>
-        <h1 className="font-semibold text-lg">User 5</h1>
-    </div>
 </div>
+
 
 
                 </div>
