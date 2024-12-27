@@ -1,23 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import axios from '../config/axios.js';
 
 const Project = () => {
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState([]); 
+    const [users,setUser] = useState([]);
     const location = useLocation();
     console.log(location.state);
 
-    // Sample users data
-    const users = [
-        { id: 1, name: 'User 1', email: 'user1@example.com' },
-        { id: 2, name: 'User 2', email: 'user2@example.com' },
-        { id: 3, name: 'User 3', email: 'user3@example.com' },
-        { id: 4, name: 'User 4', email: 'user4@example.com' },
-        { id: 5, name: 'User 5', email: 'user5@example.com' },
-        { id: 6, name: 'User 6', email: 'user6@example.com' },
-        { id: 7, name: 'User 7', email: 'user7@example.com' },
-    ];
+    // // Sample users data
+    // const users = [
+    //     { id: 1, name: 'User 1', email: 'user1@example.com' },
+    //     { id: 2, name: 'User 2', email: 'user2@example.com' },
+    //     { id: 3, name: 'User 3', email: 'user3@example.com' },
+    //     { id: 4, name: 'User 4', email: 'user4@example.com' },
+    //     { id: 5, name: 'User 5', email: 'user5@example.com' },
+    //     { id: 6, name: 'User 6', email: 'user6@example.com' },
+    //     { id: 7, name: 'User 7', email: 'user7@example.com' },
+    // ];
+useEffect(()=>{
+    axios.get('/user/all').then((res)=>{
+        setUser(res.data.users);
+    }).catch((err)=>{
+        console.log(err)
+    })
+},[])
+    
 
     const handleUserClick = (user) => {
         setSelectedUsers((prevSelectedUsers) => {
@@ -135,9 +145,9 @@ const Project = () => {
                         <div className="user-list mt-4 space-y-3 max-h-60 overflow-y-auto">
                             {users.map((user) => (
                                 <div
-                                    key={user.id}
+                                    key={user._id}
                                     className={`user cursor-pointer flex items-center gap-2 p-2 rounded-md ${
-                                        selectedUsers.some((selectedUser) => selectedUser.id === user.id)
+                                        selectedUsers.some((selectedUser) => selectedUser._id === user._id)
                                             ? 'bg-slate-400'  // Highlight selected user
                                             : ''
                                     }`}
@@ -146,7 +156,7 @@ const Project = () => {
                                     <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
                                         <i className="ri-user-fill"></i>
                                     </div>
-                                    <h1 className="font-semibold text-lg">{user.name}</h1>
+                                    <h1 className="font-semibold text-lg">{user.email}</h1>
                                 </div>
                             ))}
                         </div>
