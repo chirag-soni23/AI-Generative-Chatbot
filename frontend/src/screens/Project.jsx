@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 const Project = () => {
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedUsers, setSelectedUsers] = useState([]); 
     const location = useLocation();
     console.log(location.state);
 
@@ -20,7 +20,14 @@ const Project = () => {
     ];
 
     const handleUserClick = (user) => {
-        setSelectedUser(user);  // Set selected user
+        setSelectedUsers((prevSelectedUsers) => {
+            // Toggle selection: add if not selected, remove if selected
+            if (prevSelectedUsers.some((selectedUser) => selectedUser.id === user.id)) {
+                return prevSelectedUsers.filter((selectedUser) => selectedUser.id !== user.id);
+            } else {
+                return [...prevSelectedUsers, user];
+            }
+        });
     };
 
     return (
@@ -130,7 +137,7 @@ const Project = () => {
                                 <div
                                     key={user.id}
                                     className={`user cursor-pointer flex items-center gap-2 p-2 rounded-md ${
-                                        selectedUser && selectedUser.id === user.id
+                                        selectedUsers.some((selectedUser) => selectedUser.id === user.id)
                                             ? 'bg-slate-400'  // Highlight selected user
                                             : ''
                                     }`}
@@ -147,7 +154,7 @@ const Project = () => {
                         <div className="flex justify-center mt-4">
                             <button
                                 className="bg-blue-500 text-white py-2 px-4 rounded-md"
-                                disabled={!selectedUser}
+                                disabled={selectedUsers.length === 0} // Button enabled only if at least one user is selected
                             >
                                 Add Collaborator
                             </button>
