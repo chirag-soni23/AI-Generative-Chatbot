@@ -95,7 +95,7 @@ const Project = () => {
                 </header>
 
                 <div className="conversation-area flex-grow flex flex-col overflow-auto max-h-full">
-                    <div ref={messageBox} className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2 pb-16">
+                    <div ref={messageBox} className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2 pb-3">
                         {messages.map((msg, index) => (
                             <div
                                 key={index}
