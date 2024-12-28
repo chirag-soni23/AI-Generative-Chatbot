@@ -49,8 +49,10 @@ io.on('connection', socket => {
         console.log(data);
         socket.broadcast.to(socket.roomId).emit('project-message',data);
     })
-    socket.on('event', data => { /* … */ });
-    socket.on('disconnect', () => { /* … */ });
+    socket.on('disconnect', () => { 
+        console.log("User disconnect");
+        socket.leave(socket.roomId);
+     });
 });
 
 server.listen(port, () => {
