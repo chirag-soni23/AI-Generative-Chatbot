@@ -46,23 +46,28 @@ io.on('connection', socket => {
 
     socket.join(socket.roomId);
     
-    socket.on('project-message',async data=>{
-        const message = data.message;
-        const aiIsPresentMessage = message.includes('@ai');
-        if(aiIsPresentMessage){
-            const prompt = message.replace('@ai','');
-            const result = await generateResult(prompt);
-            io.to(socket.roomId).emit('project-message',{
-                message:result,
-                sender:{
-                    _id:'ai',
-                    email:"AI"
-                }
-            })
-            return;
+    socket.on('project-message', async (data) => {
+        try {
+            const { message } = data;
+            const aiIsPresentMessage = message.includes('@ai');
+            if (aiIsPresentMessage) {
+                const prompt = message.replace('@ai', '').trim();
+                const result = await generateResult(prompt);
+                io.to(socket.roomId).emit('project-message', {
+                    message: result,
+                    sender: {
+                        _id: 'ai',
+                        email: 'ai@example.com', // Add email for AI
+                    },
+                });
+                return;
+            }
+            socket.broadcast.to(socket.roomId).emit('project-message', data);
+        } catch (error) {
+            console.error("Error in project-message:", error);
         }
-        socket.broadcast.to(socket.roomId).emit('project-message',data);
-    })
+    });
+    
     
     socket.on('disconnect', () => { 
         console.log("User disconnect");
