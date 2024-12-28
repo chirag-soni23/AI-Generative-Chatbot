@@ -15,6 +15,9 @@ message-box {
     -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
 
+.message-box{
+    scroll-behavior: smooth;
+}
 .message-box::-webkit-scrollbar {
     display: none; 
 }
