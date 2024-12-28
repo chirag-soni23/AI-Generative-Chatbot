@@ -110,7 +110,7 @@ const Project = () => {
                     <div ref={messageBox} className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2 pb-16">
                         {/* Displaying messages */}
                         {messages.map((msg, index) => (
-                            <div key={index} className={`message flex flex-col max-w-xs gap-1 p-2 rounded-md ${msg.sender === user._id ? 'bg-slate-200 ml-auto' : 'bg-slate-50'}`}>
+                            <div key={index} className={`message flex flex-col max-w-52 gap-1 p-2 rounded-md ${msg.sender === user._id ? 'bg-slate-200 ml-auto' : 'bg-slate-50'}`}>
                                 <small className="opacity-65 text-xs">
                                     {msg.sender === user._id ? 'You' : project.users.find(u => u._id === msg.sender)?.email}
                                 </small>
