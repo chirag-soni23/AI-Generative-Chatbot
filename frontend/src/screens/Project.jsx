@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import axios from '../config/axios.js';
-import { initializeSocket, receiveMessage, sendMessage } from '../config/socket.js';
-import { useUser } from '../context/user.context.jsx';
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import axios from "../config/axios.js";
+import { initializeSocket, receiveMessage, sendMessage } from "../config/socket.js";
+import { useUser } from "../context/user.context.jsx";
 
 const Project = () => {
     const location = useLocation();
@@ -11,7 +11,7 @@ const Project = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [project, setProject] = useState(location.state.project);
     const [users, setUsers] = useState([]);
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const { user } = useUser();
     const messageBox = useRef(null);
@@ -24,12 +24,12 @@ const Project = () => {
 
     const addCollaborators = () => {
         axios
-            .put('/project/add-user', {
+            .put("/project/add-user", {
                 projectId: location.state.project._id,
                 users: selectedUsers.map((user) => user._id),
             })
             .then(() => setIsModalOpen(false))
-            .catch((err) => console.error('Error adding collaborators:', err));
+            .catch((err) => console.error("Error adding collaborators:", err));
     };
 
     const handleUserClick = (clickedUser) => {
@@ -49,8 +49,8 @@ const Project = () => {
         };
 
         setMessages((prevMessages) => [...prevMessages, newMessage]);
-        sendMessage('project-message', newMessage);
-        setMessage('');
+        sendMessage("project-message", newMessage);
+        setMessage("");
     };
 
     const appendIncomingMessage = (messageObject) => {
@@ -60,19 +60,19 @@ const Project = () => {
     useEffect(() => {
         const socketInstance = initializeSocket(project._id);
 
-        receiveMessage('project-message', (data) => {
+        receiveMessage("project-message", (data) => {
             appendIncomingMessage(data);
         });
 
         axios
             .get(`/project/get-project/${location.state.project._id}`)
             .then((res) => setProject(res.data.project))
-            .catch((err) => console.error('Error fetching project:', err));
+            .catch((err) => console.error("Error fetching project:", err));
 
         axios
-            .get('/user/all')
+            .get("/user/all")
             .then((res) => setUsers(res.data.users))
-            .catch((err) => console.error('Error fetching users:', err));
+            .catch((err) => console.error("Error fetching users:", err));
 
         return () => {
             if (socketInstance) socketInstance.disconnect();
@@ -96,19 +96,26 @@ const Project = () => {
 
                 <div className="conversation-area flex-grow flex flex-col overflow-auto max-h-full">
                     <div ref={messageBox} className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2 pb-3">
-                        {messages.map((msg, index) => (
-                            <div
-                                key={index}
-                                className={`message flex flex-col max-w-52 gap-1 p-2 rounded-md ${
-                                    msg.sender === user._id ? 'bg-slate-200 ml-auto' : 'bg-slate-50'
-                                }`}
-                            >
-                                <small className="opacity-65 text-xs">
-                                    {msg.sender === user._id ? 'You' : project.users.find((u) => u._id === msg.sender)?.email}
-                                </small>
-                                <p className="text-sm break-words">{msg.message}</p>
-                            </div>
-                        ))}
+                        {messages.map((msg, index) => {
+                            const senderEmail =
+                                msg.sender === "ai"
+                                    ? "ai@example.com" // AI email
+                                    : msg.sender === user._id
+                                    ? "You"
+                                    : project.users.find((u) => u._id === msg.sender)?.email || "AI";
+
+                            return (
+                                <div
+                                    key={index}
+                                    className={`message flex flex-col max-w-52 gap-1 p-2 rounded-md ${
+                                        msg.sender === user._id ? "bg-slate-200 ml-auto" : "bg-slate-50"
+                                    }`}
+                                >
+                                    <small className="opacity-65 text-xs">{senderEmail}</small>
+                                    <p className="text-sm break-words">{msg.message}</p>
+                                </div>
+                            );
+                        })}
                     </div>
 
                     <div className="w-full input-box flex items-center p-2 bg-white border-t">
@@ -127,7 +134,7 @@ const Project = () => {
 
                 <div
                     className={`absolute top-0 left-0 transform transition-transform duration-300 w-full h-full bg-slate-500 z-10 flex flex-col gap-2 ${
-                        isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'
+                        isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
                     }`}
                 >
                     <header className="flex justify-between items-center bg-slate-200 px-3 py-2">
@@ -165,7 +172,7 @@ const Project = () => {
                                 <div
                                     key={user._id}
                                     className={`user flex items-center gap-2 p-2 rounded-md ${
-                                        selectedUsers.some((u) => u._id === user._id) ? 'bg-slate-400' : ''
+                                        selectedUsers.some((u) => u._id === user._id) ? "bg-slate-400" : ""
                                     }`}
                                     onClick={() => handleUserClick(user)}
                                 >
