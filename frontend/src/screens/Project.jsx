@@ -148,30 +148,31 @@ const Project = () => {
                         </button>
                     </div>
                 </div>
-            </section>
 
             {/* Collaborators Panel */}
-            {isSidePanelOpen && (
-                <div className="absolute top-0 left-0 transform transition-transform duration-300 w-full h-full bg-slate-500 z-10 flex flex-col gap-2 translate-x-0">
-                    <header className="flex justify-between items-center bg-slate-200 px-3 py-2">
-                        <h1 className="font-semibold text-lg">Collaborators</h1>
-                        <button onClick={() => setIsSidePanelOpen(false)} className="text-black text-xl p-2">
-                            <i className="ri-close-fill"></i>
-                        </button>
-                    </header>
+            <div
+                className={`absolute top-0 left-0 transform transition-transform duration-300 w-full h-full bg-slate-500 z-10 flex flex-col gap-2 ${
+                    isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
+            >
+                <header className="flex justify-between items-center bg-slate-200 px-3 py-2">
+                    <h1 className="font-semibold text-lg">Collaborators</h1>
+                    <button onClick={() => setIsSidePanelOpen(false)} className="text-black text-xl p-2">
+                        <i className="ri-close-fill"></i>
+                    </button>
+                </header>
 
-                    <div className="users flex flex-col gap-3 p-4">
-                        {project?.users?.map((user, index) => (
-                            <div key={index} className="user flex items-center gap-2 p-2 rounded-md">
-                                <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
-                                    <i className="ri-user-fill"></i>
-                                </div>
-                                <h1 className="font-semibold text-lg">{user.email}</h1>
+                <div className="users flex flex-col gap-3 p-4">
+                    {project?.users?.map((user, index) => (
+                        <div key={index} className="user flex items-center gap-2 p-2 rounded-md">
+                            <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
+                                <i className="ri-user-fill"></i>
                             </div>
-                        ))}
-                    </div>
+                            <h1 className="font-semibold text-lg">{user.email}</h1>
+                        </div>
+                    ))}
                 </div>
-            )}
+            </div>
 
             {/* Modal */}
             {isModalOpen && (
@@ -213,6 +214,8 @@ const Project = () => {
                     </div>
                 </div>
             )}
+            </section>
+
         </main>
     );
 };
