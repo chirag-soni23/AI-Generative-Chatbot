@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import {connectDb } from './db/db.js';
 import userRoutes from './routes/userRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -25,5 +26,6 @@ app.get('/', (req, res) => {
 
 app.use('/api/user',userRoutes);
 app.use('/api/project',projectRoutes);
+app.use('/api/ai',aiRoutes);
 
 export default app;
