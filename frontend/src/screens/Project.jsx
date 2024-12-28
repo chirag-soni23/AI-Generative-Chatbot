@@ -9,15 +9,18 @@ const Project = () => {
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState([]);
-    const [project, setProject] = useState(location.state.project)
-    const [users, setUser] = useState([]);
+    const [project, setProject] = useState(location.state.project);
+    const [users, setUsers] = useState([]);
     const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState([]);
     const { user } = useUser();
+
+    const messageBox = React.createRef();
 
     function addCollaborators() {
         axios.put('/project/add-user', {
             projectId: location.state.project._id,
-            users: selectedUsers.map(user => user._id) // Send only user IDs
+            users: selectedUsers.map(user => user._id)
         }).then(res => {
             setIsModalOpen(false);
         }).catch(err => {
@@ -28,50 +31,64 @@ const Project = () => {
     const handleUserClick = (user) => {
         setSelectedUsers((prevSelectedUsers) => {
             if (prevSelectedUsers.some((selectedUser) => selectedUser._id === user._id)) {
-                // Remove user if already selected
                 return prevSelectedUsers.filter((selectedUser) => selectedUser._id !== user._id);
             } else {
-                // Add user if not selected
                 return [...prevSelectedUsers, user];
             }
         });
     };
 
-    useEffect(() => {
-        console.log('Selected Users:', selectedUsers);
-    }, [selectedUsers]);
-
-
     const sendMessageHandler = () => {
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+                sender: user._id,
+                message: message,
+            },
+        ]);
+
         sendMessage('project-message', {
             message,
             sender: user._id
         });
-        setMessage('');
+
+        setMessage(''); 
     };
+
+    function appendInComingMessage(messageObject) {
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+                sender: messageObject.sender,
+                message: messageObject.message,
+            },
+        ]);
+    }
 
     useEffect(() => {
         initializeSocket(project._id);
+
         receiveMessage('project-message', (data) => {
-            console.log(data);
+            appendInComingMessage(data);
         });
 
-
-
-
         axios.get(`/project/get-project/${location.state.project._id}`).then(res => {
-            console.log(res.data.project)
             setProject(res.data.project);
-        })
+        });
+
         axios.get('/user/all').then((res) => {
-            setUser(res.data.users);
+            setUsers(res.data.users);
         }).catch((err) => {
             console.log(err);
         });
-    }, []);
+
+        return () => {
+            socketInstance.disconnect();
+        };
+    }, [project._id]);
+
     return (
         <main className="h-screen w-screen flex flex-col md:flex-row">
-            {/* Sidebar Section */}
             <section className="relative bg-slate-300 flex flex-col h-full md:w-1/3 lg:w-1/4">
                 <header className="flex justify-between items-center p-2 px-4 bg-slate-200 cursor-pointer">
                     <button
@@ -89,17 +106,17 @@ const Project = () => {
                     </button>
                 </header>
 
-                {/* Conversation Area */}
-                <div className="conversation-area flex flex-grow flex-col">
-                    <div className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2">
-                        <div className="incoming-message flex flex-col max-w-xs gap-1 p-2 bg-slate-50 w-fit rounded-md">
-                            <small className="opacity-65 text-xs">example@gmail.com</small>
-                            <p className="text-sm break-words">Hello, How are you?</p>
-                        </div>
-                        <div className="outgoing-message flex flex-col max-w-xs ml-auto gap-1 p-2 bg-slate-200 w-fit rounded-md">
-                            <small className="opacity-65 text-xs">example@gmail.com</small>
-                            <p className="text-sm break-words">Hey, I am fine.</p>
-                        </div>
+                <div className="conversation-area flex flex-grow flex-col overflow-auto max-h-full">
+                    <div ref={messageBox} className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2 pb-16">
+                        {/* Displaying messages */}
+                        {messages.map((msg, index) => (
+                            <div key={index} className={`message flex flex-col max-w-xs gap-1 p-2 rounded-md ${msg.sender === user._id ? 'bg-slate-200 ml-auto' : 'bg-slate-50'}`}>
+                                <small className="opacity-65 text-xs">
+                                    {msg.sender === user._id ? 'You' : project.users.find(u => u._id === msg.sender)?.email}
+                                </small>
+                                <p className="text-sm break-words">{msg.message}</p>
+                            </div>
+                        ))}
                     </div>
 
                     {/* Input Box */}
@@ -110,17 +127,13 @@ const Project = () => {
                             type="text"
                             placeholder="Enter message"
                         />
-                        {/* send message */}
                         <button onClick={sendMessageHandler} className="p-2 text-blue-500">
                             <i className="ri-send-plane-fill"></i>
                         </button>
                     </div>
                 </div>
-
-                {/* Side Panel */}
                 <div
-                    className={`absolute top-0 left-0 transform transition-transform duration-300 w-full h-full bg-slate-500 z-10 flex flex-col gap-2 ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'
-                        }`}
+                    className={`absolute top-0 left-0 transform transition-transform duration-300 w-full h-full bg-slate-500 z-10 flex flex-col gap-2 ${isSidePanelOpen ? 'translate-x-0' : '-translate-x-full'}`}
                 >
                     <header className="flex justify-between items-center bg-slate-200 px-3 py-2">
                         <h1 className='font-semibold text-lg'>Collaborators</h1>
@@ -133,22 +146,15 @@ const Project = () => {
                     </header>
 
                     <div className="users flex flex-col gap-3 p-4">
-                        {/* User List */}
-                        {project.users && project.users.map((user, index) => {
-                            return (
-                                <div key={index} className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
-                                    <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
-                                        <i className="ri-user-fill"></i>
-                                    </div>
-                                    <h1 className="font-semibold text-lg">{user.email}</h1>
+                        {project.users && project.users.map((user, index) => (
+                            <div key={index} className="user cursor-pointer flex items-center gap-2 p-2 rounded-md">
+                                <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
+                                    <i className="ri-user-fill"></i>
                                 </div>
-                            )
-                        })}
-
+                                <h1 className="font-semibold text-lg">{user.email}</h1>
+                            </div>
+                        ))}
                     </div>
-
-
-
                 </div>
             </section>
 
@@ -166,15 +172,11 @@ const Project = () => {
                             </button>
                         </header>
 
-                        {/* Scrollable User List */}
                         <div className="user-list mt-4 space-y-3 max-h-60 overflow-y-auto">
                             {users.map((user) => (
                                 <div
                                     key={user._id}
-                                    className={`user cursor-pointer flex items-center gap-2 p-2 rounded-md ${selectedUsers.some((selectedUser) => selectedUser._id === user._id)
-                                            ? 'bg-slate-400'  // Highlight selected user
-                                            : ''
-                                        }`}
+                                    className={`user cursor-pointer flex items-center gap-2 p-2 rounded-md ${selectedUsers.some((selectedUser) => selectedUser._id === user._id) ? 'bg-slate-400' : ''}`}
                                     onClick={() => handleUserClick(user)}
                                 >
                                     <div className="aspect-square w-10 h-10 rounded-full flex items-center justify-center bg-slate-300">
@@ -186,10 +188,7 @@ const Project = () => {
                         </div>
 
                         <div className="flex justify-center mt-4">
-                            <button onClick={addCollaborators}
-                                className="bg-blue-500 text-white py-2 px-4 rounded-md"
-                                disabled={selectedUsers.length === 0}
-                            >
+                            <button onClick={addCollaborators} className="bg-blue-500 text-white py-2 px-4 rounded-md" disabled={selectedUsers.length === 0}>
                                 Add Collaborator
                             </button>
                         </div>
