@@ -122,14 +122,14 @@ const Project = () => {
                             return (
                                 <div
                                     key={index}
-                                    className={`message flex flex-col max-w-52 gap-1 p-2 rounded-md ${
+                                    className={`message flex flex-col max-w-full gap-1 p-2 rounded-md ${
                                         msg.sender === user._id ? "bg-slate-200 ml-auto" : "bg-slate-50"
                                     }`}
                                 >
                                     <small className="opacity-65 text-xs">{senderEmail}</small>
                                     {/* Render Markdown */}
-                                    <div className='overflow-auto text-white'>
-                                    <Markdown className="text-sm break-words">{msg.message}</Markdown>
+                                    <div className="overflow-auto max-w-full bg-slate-950 text-white p-2 rounded-md">
+                                        <Markdown className="text-sm break-words">{msg.message}</Markdown>
                                     </div>
                                 </div>
                             );
