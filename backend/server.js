@@ -57,7 +57,7 @@ io.on('connection', socket => {
                     message: result,
                     sender: {
                         _id: 'ai',
-                        email: 'ai@example.com', // Add email for AI
+                        email: 'ai@example.com', 
                     },
                 });
                 return;
