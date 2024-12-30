@@ -4,6 +4,8 @@ import axios from "../config/axios.js";
 import { initializeSocket, receiveMessage, sendMessage } from "../config/socket.js";
 import { useUser } from "../context/user.context.jsx";
 import Markdown from "markdown-to-jsx";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const Project = () => {
     const location = useLocation();
@@ -127,9 +129,25 @@ const Project = () => {
                                     }`}
                                 >
                                     <small className="opacity-65 text-xs">{senderEmail}</small>
-                                    {/* Render Markdown */}
+                                    {/* Render Markdown with syntax highlighting */}
                                     <div className="overflow-auto max-w-full bg-slate-950 text-white p-2 rounded-md">
-                                        <Markdown className="text-sm break-words">{msg.message}</Markdown>
+                                        <Markdown
+                                            className="text-sm break-words"
+                                            options={{
+                                                forceBlock: true,
+                                                overrides: {
+                                                    code: {
+                                                        component: SyntaxHighlighter,
+                                                        props: {
+                                                            style: nightOwl, // Dark theme
+                                                            language: "javascript", // Adjust language dynamically if necessary
+                                                        },
+                                                    },
+                                                },
+                                            }}
+                                        >
+                                            {msg.message}
+                                        </Markdown>
                                     </div>
                                 </div>
                             );
