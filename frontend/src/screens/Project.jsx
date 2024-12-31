@@ -112,7 +112,7 @@ const Project = () => {
 
     const getSenderEmail = (senderId) => {
         if (senderId === "ai") {
-            return "AI <ai@example.com>";  
+            return "AI";  
         } else if (senderId === user._id) {
             return "You";
         } else {
