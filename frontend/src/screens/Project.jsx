@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "../config/axios.js";
 import { initializeSocket, receiveMessage, sendMessage } from "../config/socket.js";
@@ -6,11 +6,13 @@ import { useUser } from "../context/user.context.jsx";
 import Markdown from "markdown-to-jsx";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
+// Import react-hot-toast
+import { toast } from 'react-hot-toast';
 
 const Project = () => {
     const location = useLocation();
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);  // Modal open state for adding collaborators
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [project, setProject] = useState(location.state.project || {});
     const [users, setUsers] = useState([]);
@@ -32,8 +34,15 @@ const Project = () => {
                 users: selectedUsers.map((user) => user._id),
             });
             setIsModalOpen(false);
+            setSelectedUsers([]);  // Reset selected users after adding them
+
+            // Show success toast
+            toast.success("Collaborators added successfully!");
         } catch (err) {
             console.error("Error adding collaborators:", err);
+
+            // Show error toast
+            toast.error("Failed to add collaborators. Try again!");
         }
     };
 
@@ -59,6 +68,9 @@ const Project = () => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
         sendMessage("project-message", newMessage);
         setMessage("");
+
+        // Show success toast for sending message
+        toast.success("Message sent successfully!");
     };
 
     const appendIncomingMessage = useCallback((messageObject) => {
@@ -76,6 +88,9 @@ const Project = () => {
                 setProject(data.project);
             } catch (err) {
                 console.error("Error fetching project:", err);
+
+                // Show error toast
+                toast.error("Failed to fetch project details!");
             }
         };
 
@@ -85,6 +100,9 @@ const Project = () => {
                 setUsers(data.users);
             } catch (err) {
                 console.error("Error fetching users:", err);
+
+                // Show error toast
+                toast.error("Failed to fetch users!");
             }
         };
 
@@ -111,7 +129,8 @@ const Project = () => {
                     </button>
                 </header>
 
-                <div className="conversation-area flex-grow flex flex-col overflow-auto max-h-full">
+                <div className={`conversation-area flex-grow flex flex-col overflow-auto max-h-full`}>
+                    {/* Messages */}
                     <div ref={messageBox} className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2 pb-3">
                         {messages.map((msg, index) => {
                             const senderEmail =
@@ -129,7 +148,6 @@ const Project = () => {
                                     }`}
                                 >
                                     <small className="opacity-65 text-xs">{senderEmail}</small>
-                                    {/* Render Markdown with syntax highlighting */}
                                     <div className="overflow-auto max-w-full bg-slate-950 text-white p-2 rounded-md">
                                         <Markdown
                                             className="text-sm break-words"
@@ -139,8 +157,8 @@ const Project = () => {
                                                     code: {
                                                         component: SyntaxHighlighter,
                                                         props: {
-                                                            style: nightOwl, // Dark theme
-                                                            language: "javascript", // Adjust language dynamically if necessary
+                                                            style: nightOwl,
+                                                            language: "javascript",
                                                         },
                                                     },
                                                 },
@@ -154,6 +172,7 @@ const Project = () => {
                         })}
                     </div>
 
+                    {/* Message Input */}
                     <div className="w-full input-box flex items-center p-2 bg-white border-t">
                         <input
                             value={message}
@@ -167,6 +186,68 @@ const Project = () => {
                         </button>
                     </div>
                 </div>
+
+            {/* Side Panel for Collaborators */}
+            <div
+                className={`fixed top-0 left-0 h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out transform ${
+                    isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
+                style={{ width: "250px" }}
+            >
+                <header className="flex justify-between items-center p-4 border-b">
+                    <h3 className="text-xl font-semibold">Current Collaborators</h3>
+                    <button onClick={() => setIsSidePanelOpen(false)}>
+                        <i className="ri-close-fill"></i>
+                    </button>
+                </header>
+                <div className="flex flex-col p-4">
+                    {project?.users?.map((userItem) => (
+                        <div key={userItem._id} className="flex items-center gap-2">
+                            <i className="ri-user-fill"></i>
+                            <span>{userItem.email}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Add Collaborators Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded-lg w-96">
+                        <h2 className="text-xl font-semibold mb-4">Select Users to Add</h2>
+                        <div className="space-y-4">
+                            {users.map((userItem) => (
+                                <div
+                                    key={userItem._id}
+                                    className="flex items-center gap-2 cursor-pointer"
+                                    onClick={() => handleUserClick(userItem)}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedUsers.some((u) => u._id === userItem._id)}
+                                        onChange={() => {}}
+                                    />
+                                    <span>{userItem.email}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mt-4 flex gap-4">
+                            <button
+                                onClick={addCollaborators}
+                                className="w-full bg-blue-500 text-white py-2 rounded-md"
+                            >
+                                Add Collaborators
+                            </button>
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="w-full bg-red-500 text-white py-2 rounded-md"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             </section>
         </main>
     );
