@@ -66,7 +66,7 @@ const Project = () => {
 
         setMessages((prevMessages) => [...prevMessages, newMessage]);
         sendMessage("project-message", newMessage);
-        setMessage("");
+        setMessage("")
 
         // Show success toast for sending message
         toast.success("Message sent successfully!");
@@ -132,12 +132,17 @@ const Project = () => {
                     {/* Messages */}
                     <div ref={messageBox} className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2 pb-3">
                         {messages.map((msg, index) => {
-                            const senderEmail =
-                                msg.sender === "ai"
-                                    ? "ai@example.com"
-                                    : msg.sender === user._id
-                                    ? "You"
-                                    : project?.users?.find((u) => u._id === msg.sender)?.email || "AI";
+                            let senderEmail;
+
+                            if (msg.sender === user._id) {
+                                senderEmail = "You";
+                            } else if (msg.sender === "ai") {
+                                senderEmail = "AI"; // Explicitly set AI's name as "AI"
+                            } else {
+                                // Check if the sender is a project user
+                                const senderUser = project?.users?.find((u) => u._id === msg.sender);
+                                senderEmail = senderUser ? senderUser.email : "Unknown User";
+                            }
 
                             return (
                                 <div
@@ -186,67 +191,67 @@ const Project = () => {
                     </div>
                 </div>
 
-            {/* Side Panel for Collaborators */}
-            <div
-                className={`fixed top-0 left-0 h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out transform ${
-                    isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
-                }`}
-                style={{ width: "250px" }}
-            >
-                <header className="flex justify-between items-center p-4 border-b">
-                    <h3 className="text-xl font-semibold">Current Collaborators</h3>
-                    <button onClick={() => setIsSidePanelOpen(false)}>
-                        <i className="ri-close-fill"></i>
-                    </button>
-                </header>
-                <div className="flex flex-col p-4">
-                    {project?.users?.map((userItem) => (
-                        <div key={userItem._id} className="flex items-center gap-2">
-                            <i className="ri-user-fill"></i>
-                            <span>{userItem.email}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Add Collaborators Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg w-96">
-                        <h2 className="text-xl font-semibold mb-4">Select Users to Add</h2>
-                        <div className="space-y-4">
-                            {users.map((userItem) => (
-                                <div
-                                    key={userItem._id}
-                                    className="flex items-center gap-2 cursor-pointer"
-                                    onClick={() => handleUserClick(userItem)}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedUsers.some((u) => u._id === userItem._id)}
-                                        onChange={() => {}}
-                                    />
-                                    <span>{userItem.email}</span>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="mt-4 flex gap-4">
-                            <button
-                                onClick={addCollaborators}
-                                className="w-full bg-blue-500 text-white py-2 rounded-md"
-                            >
-                                Add Collaborators
-                            </button>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="w-full bg-red-500 text-white py-2 rounded-md"
-                            >
-                                Cancel
-                            </button>
-                        </div>
+                {/* Side Panel for Collaborators */}
+                <div
+                    className={`fixed top-0 left-0 h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out transform ${
+                        isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
+                    }`}
+                    style={{ width: "250px" }}
+                >
+                    <header className="flex justify-between items-center p-4 border-b">
+                        <h3 className="text-xl font-semibold">Current Collaborators</h3>
+                        <button onClick={() => setIsSidePanelOpen(false)}>
+                            <i className="ri-close-fill"></i>
+                        </button>
+                    </header>
+                    <div className="flex flex-col p-4">
+                        {project?.users?.map((userItem) => (
+                            <div key={userItem._id} className="flex items-center gap-2">
+                                <i className="ri-user-fill"></i>
+                                <span>{userItem.email}</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
-            )}
+
+                {/* Add Collaborators Modal */}
+                {isModalOpen && (
+                    <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
+                        <div className="bg-white p-6 rounded-lg w-96">
+                            <h2 className="text-xl font-semibold mb-4">Select Users to Add</h2>
+                            <div className="space-y-4">
+                                {users.map((userItem) => (
+                                    <div
+                                        key={userItem._id}
+                                        className="flex items-center gap-2 cursor-pointer"
+                                        onClick={() => handleUserClick(userItem)}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedUsers.some((u) => u._id === userItem._id)}
+                                            onChange={() => {}}
+                                        />
+                                        <span>{userItem.email}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mt-4 flex gap-4">
+                                <button
+                                    onClick={addCollaborators}
+                                    className="w-full bg-blue-500 text-white py-2 rounded-md"
+                                >
+                                    Add Collaborators
+                                </button>
+                                <button
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="w-full bg-red-500 text-white py-2 rounded-md"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </section>
         </main>
     );
