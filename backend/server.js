@@ -52,13 +52,12 @@ io.on('connection', socket => {
             const aiIsPresentMessage = message.includes('@ai');
             if (aiIsPresentMessage) {
                 const prompt = message.replace('@ai', '').trim();
-                const result = await generateResult(prompt);
+                const result = await generateResult(prompt);  
+    
                 io.to(socket.roomId).emit('project-message', {
                     message: result,
-                    sender: {
-                        _id: 'ai',
-                        email: 'ai@example.com', 
-                    },
+                    sender: "ai", 
+                    email: "AI",
                 });
                 return;
             }
@@ -67,6 +66,7 @@ io.on('connection', socket => {
             console.error("Error in project-message:", error);
         }
     });
+    
     
     
     socket.on('disconnect', () => { 

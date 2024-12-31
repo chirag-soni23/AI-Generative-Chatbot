@@ -114,15 +114,17 @@ const Project = () => {
         if (senderId === "ai") {
             return "AI";  
         } else if (senderId === user._id) {
-            return "You";
+            return "You"; 
         } else {
             const senderUser = project?.users?.find((u) => u._id === senderId);
             if (senderUser) {
-                return senderUser.email; 
+                return senderUser.email;  
             }
             return "Unknown User"; 
         }
     };
+    
+    
 
     return (
         <main className="h-screen w-screen flex flex-col md:flex-row">
@@ -140,39 +142,38 @@ const Project = () => {
                 <div className={`conversation-area flex-grow flex flex-col overflow-auto max-h-full`}>
                     {/* Messages */}
                     <div ref={messageBox} className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2 pb-3">
-                        {messages.map((msg, index) => {
-                            const senderEmail = getSenderEmail(msg.sender);
+                    {messages.map((msg, index) => {
+    const senderEmail = getSenderEmail(msg.sender);
 
-                            return (
-                                <div
-                                    key={index}
-                                    className={`message flex flex-col max-w-full gap-1 p-2 rounded-md ${
-                                        msg.sender === user._id ? "bg-slate-200 ml-auto" : "bg-slate-50"
-                                    }`}
-                                >
-                                    <small className="opacity-65 text-xs">{senderEmail}</small>
-                                    <div className="overflow-auto max-w-full bg-slate-950 text-white p-2 rounded-md">
-                                        <Markdown
-                                            className="text-sm break-words"
-                                            options={{
-                                                forceBlock: true,
-                                                overrides: {
-                                                    code: {
-                                                        component: SyntaxHighlighter,
-                                                        props: {
-                                                            style: nightOwl,
-                                                            language: "javascript",
-                                                        },
-                                                    },
-                                                },
-                                            }}
-                                        >
-                                            {msg.message}
-                                        </Markdown>
-                                    </div>
-                                </div>
-                            );
-                        })}
+    return (
+        <div
+            key={index}
+            className={`message flex flex-col max-w-full gap-1 p-2 rounded-md ${msg.sender === user._id ? "bg-slate-200 ml-auto" : "bg-slate-50"}`}
+        >
+            <small className="opacity-65 text-xs">{senderEmail}</small>
+            <div className="overflow-auto max-w-full bg-slate-950 text-white p-2 rounded-md">
+                <Markdown
+                    className="text-sm break-words"
+                    options={{
+                        forceBlock: true,
+                        overrides: {
+                            code: {
+                                component: SyntaxHighlighter,
+                                props: {
+                                    style: nightOwl,
+                                    language: "javascript",
+                                },
+                            },
+                        },
+                    }}
+                >
+                    {msg.message}
+                </Markdown>
+            </div>
+        </div>
+    );
+})}
+
                     </div>
 
                     {/* Message Input */}
