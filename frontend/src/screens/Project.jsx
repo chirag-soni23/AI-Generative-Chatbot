@@ -66,7 +66,7 @@ const Project = () => {
 
         setMessages((prevMessages) => [...prevMessages, newMessage]);
         sendMessage("project-message", newMessage);
-        setMessage("")
+        setMessage("");
 
         // Show success toast for sending message
         toast.success("Message sent successfully!");
@@ -115,6 +115,21 @@ const Project = () => {
 
     useEffect(scrollToBottom, [messages]);
 
+    const getSenderEmail = (senderId) => {
+        if (senderId === "ai") {
+            return "AI <ai@example.com>";  // For AI messages
+        } else if (senderId === user._id) {
+            return "You";
+        } else {
+            // Find the user in the project collaborators list
+            const senderUser = project?.users?.find((u) => u._id === senderId);
+            if (senderUser) {
+                return senderUser.email;  // Return user's email if found
+            }
+            return "Unknown User";  // Default fallback for unknown users
+        }
+    };
+
     return (
         <main className="h-screen w-screen flex flex-col md:flex-row">
             <section className="relative bg-slate-300 flex flex-col h-full md:w-1/3 lg:w-1/4">
@@ -132,17 +147,7 @@ const Project = () => {
                     {/* Messages */}
                     <div ref={messageBox} className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2 pb-3">
                         {messages.map((msg, index) => {
-                            let senderEmail;
-
-                            if (msg.sender === user._id) {
-                                senderEmail = "You";
-                            } else if (msg.sender === "ai") {
-                                senderEmail = "AI"; // Explicitly set AI's name as "AI"
-                            } else {
-                                // Check if the sender is a project user
-                                const senderUser = project?.users?.find((u) => u._id === msg.sender);
-                                senderEmail = senderUser ? senderUser.email : "Unknown User";
-                            }
+                            const senderEmail = getSenderEmail(msg.sender);
 
                             return (
                                 <div
