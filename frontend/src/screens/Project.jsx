@@ -11,7 +11,7 @@ import { toast } from 'react-hot-toast';
 const Project = () => {
     const location = useLocation();
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);  // Modal open state for adding collaborators
+    const [isModalOpen, setIsModalOpen] = useState(false); 
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [project, setProject] = useState(location.state.project || {});
     const [users, setUsers] = useState([]);
@@ -33,14 +33,12 @@ const Project = () => {
                 users: selectedUsers.map((user) => user._id),
             });
             setIsModalOpen(false);
-            setSelectedUsers([]);  // Reset selected users after adding them
+            setSelectedUsers([]);  
 
-            // Show success toast
             toast.success("Collaborators added successfully!");
         } catch (err) {
             console.error("Error adding collaborators:", err);
 
-            // Show error toast
             toast.error("Failed to add collaborators. Try again!");
         }
     };
@@ -68,7 +66,6 @@ const Project = () => {
         sendMessage("project-message", newMessage);
         setMessage("");
 
-        // Show success toast for sending message
         toast.success("Message sent successfully!");
     };
 
@@ -88,7 +85,6 @@ const Project = () => {
             } catch (err) {
                 console.error("Error fetching project:", err);
 
-                // Show error toast
                 toast.error("Failed to fetch project details!");
             }
         };
@@ -100,7 +96,6 @@ const Project = () => {
             } catch (err) {
                 console.error("Error fetching users:", err);
 
-                // Show error toast
                 toast.error("Failed to fetch users!");
             }
         };
@@ -117,16 +112,15 @@ const Project = () => {
 
     const getSenderEmail = (senderId) => {
         if (senderId === "ai") {
-            return "AI <ai@example.com>";  // For AI messages
+            return "AI <ai@example.com>";  
         } else if (senderId === user._id) {
             return "You";
         } else {
-            // Find the user in the project collaborators list
             const senderUser = project?.users?.find((u) => u._id === senderId);
             if (senderUser) {
-                return senderUser.email;  // Return user's email if found
+                return senderUser.email; 
             }
-            return "Unknown User";  // Default fallback for unknown users
+            return "Unknown User"; 
         }
     };
 
