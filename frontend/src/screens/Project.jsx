@@ -6,7 +6,6 @@ import { useUser } from "../context/user.context.jsx";
 import Markdown from "markdown-to-jsx";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
-// Import react-hot-toast
 import { toast } from 'react-hot-toast';
 
 const Project = () => {
