@@ -12,18 +12,18 @@ const Project = () => {
     const location = useLocation();
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
     const [fileTree, setFileTree] = useState({
-        "app.js":{
-            content:`const express = require('express');`
+        "app.js": {
+            content: `const express = require('express');`
         },
-        "package.json":{
-            content:`{
+        "package.json": {
+            content: `{
             "name":"temp-server"
             }`
         }
     })
 
-    const [currentFile,setCurrentFile] = useState(null); 
-    const [isModalOpen, setIsModalOpen] = useState(false); 
+    const [currentFile, setCurrentFile] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [project, setProject] = useState(location.state.project || {});
     const [users, setUsers] = useState([]);
@@ -45,7 +45,7 @@ const Project = () => {
                 users: selectedUsers.map((user) => user._id),
             });
             setIsModalOpen(false);
-            setSelectedUsers([]);  
+            setSelectedUsers([]);
 
             toast.success("Collaborators added successfully!");
         } catch (err) {
@@ -83,7 +83,7 @@ const Project = () => {
 
     const appendIncomingMessage = useCallback((messageObject) => {
         let formattedMessage = messageObject;
-    
+
         // Parse the "message" field if it is a JSON string
         if (messageObject.sender === "ai" && typeof messageObject.message === "string") {
             try {
@@ -93,11 +93,11 @@ const Project = () => {
                 console.error("Failed to parse AI message:", err);
             }
         }
-    
+
         setMessages((prevMessages) => [...prevMessages, formattedMessage]);
     }, []);
-    
-    
+
+
 
     useEffect(() => {
         const socketInstance = initializeSocket(project._id);
@@ -138,19 +138,19 @@ const Project = () => {
 
     const getSenderEmail = (senderId) => {
         if (senderId === "ai") {
-            return "AI";  
+            return "AI";
         } else if (senderId === user._id) {
-            return "You"; 
+            return "You";
         } else {
             const senderUser = project?.users?.find((u) => u._id === senderId);
             if (senderUser) {
-                return senderUser.email;  
+                return senderUser.email;
             }
-            return "Unknown User"; 
+            return "Unknown User";
         }
     };
-    
-    
+
+
 
     return (
         <main className="h-screen w-screen flex flex-col md:flex-row">
@@ -169,41 +169,41 @@ const Project = () => {
                 <div className={`conversation-area flex-grow flex flex-col overflow-auto max-h-full`}>
                     {/* Messages */}
                     <div ref={messageBox} className="message-box flex-grow flex flex-col gap-3 overflow-y-auto p-2 pb-3">
-                    {messages.map((msg, index) => {
-    const senderEmail = getSenderEmail(msg.sender);
+                        {messages.map((msg, index) => {
+                            const senderEmail = getSenderEmail(msg.sender);
 
-    return (
-        <div
-            key={index}
-            className={`message flex flex-col max-w-full gap-1 p-2 rounded-md ${msg.sender === "ai" ?"max-w-full":"max-w-48"} ${msg.sender === user._id ? "bg-slate-200 ml-auto" : "bg-slate-50"}`}
-        >
-            <small className="opacity-65 text-xs">{senderEmail}</small>
-            <div
-    className={`overflow-auto max-w-full p-2 rounded-md ${msg.sender === "ai" ? "bg-slate-950" : "bg-slate-50"}
+                            return (
+                                <div
+                                    key={index}
+                                    className={`message flex flex-col max-w-full gap-1 p-2 rounded-md ${msg.sender === "ai" ? "max-w-full" : "max-w-44"} ${msg.sender === user._id ? "bg-slate-200 ml-auto" : "bg-slate-50"}`}
+                                >
+                                    <small className="opacity-65 text-xs">{senderEmail}</small>
+                                    <div
+                                        className={`overflow-auto max-w-full p-2 rounded-md ${msg.sender === "ai" ? "bg-slate-950" : "bg-slate-50"}
     ${msg.sender === "ai" ? "text-white" : "text-black"}`}
->
-    <Markdown
-        className="text-sm break-words"
-        options={{
-            forceBlock: true,
-            overrides: {
-                code: {
-                    component: SyntaxHighlighter,
-                    props: {
-                        style: nightOwl,
-                        language: "javascript",
-                    },
-                },
-            },
-        }}
-    >
-        {msg.message}
-    </Markdown>
-</div>
+                                    >
+                                        <Markdown
+                                            className="text-sm break-words"
+                                            options={{
+                                                forceBlock: true,
+                                                overrides: {
+                                                    code: {
+                                                        component: SyntaxHighlighter,
+                                                        props: {
+                                                            style: nightOwl,
+                                                            language: "javascript",
+                                                        },
+                                                    },
+                                                },
+                                            }}
+                                        >
+                                            {msg.message}
+                                        </Markdown>
+                                    </div>
 
-        </div>
-    );
-})}
+                                </div>
+                            );
+                        })}
 
                     </div>
 
@@ -224,9 +224,8 @@ const Project = () => {
 
                 {/* Side Panel for Collaborators */}
                 <div
-                    className={`fixed top-0 left-0 h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out transform ${
-                        isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
-                    }`}
+                    className={`fixed top-0 left-0 h-full bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out transform ${isSidePanelOpen ? "translate-x-0" : "-translate-x-full"
+                        }`}
                     style={{ width: "250px" }}
                 >
                     <header className="flex justify-between items-center p-4 border-b">
@@ -260,7 +259,7 @@ const Project = () => {
                                         <input
                                             type="checkbox"
                                             checked={selectedUsers.some((u) => u._id === userItem._id)}
-                                            onChange={() => {}}
+                                            onChange={() => { }}
                                         />
                                         <span>{userItem.email}</span>
                                     </div>
@@ -286,24 +285,24 @@ const Project = () => {
             </section>
             {/* right section */}
             <section className="right bg-red-500 flex-grow h-full flex">
-              <div className="explorer bg-blue-500  h-full max-w-64 min-w-52">
-                <div className="file-tree w-full">
+                <div className="explorer bg-blue-500  h-full max-w-64 min-w-52">
+                    <div className="file-tree w-full">
 
-                   {Object.keys(fileTree).map((file,index)=>(
-                     <button onClick={()=>setCurrentFile(file)} className="tree-element px-4 py-2 cursor-pointer flex items-center gap-2 bg-green-400 w-full ">
-                     <p className="cursor-pointer font-semibold tet-lg">{file}</p>
-                 </button>
-                   ))}
+                        {Object.keys(fileTree).map((file, index) => (
+                            <button onClick={() => setCurrentFile(file)} className="tree-element px-4 py-2 cursor-pointer flex items-center gap-2 bg-green-400 w-full ">
+                                <p className="cursor-pointer font-semibold tet-lg">{file}</p>
+                            </button>
+                        ))}
 
                     </div>
-                    </div> 
-              <div className="code-editor">
-{currentFile && (
-    <div className="code-editor-heder flex justify-between items-center p-2 bg-slate-200">
-<h1 className="font-semibold text-lg">{currentFile}</h1>  <button className="p-2" onClick={()=>setCurrentFile(null)}><i className="ri-close-fill"></i></button>  </div>
-)}
-                
-                </div> 
+                </div>
+                <div className="code-editor">
+                    {currentFile && (
+                        <div className="code-editor-heder flex justify-between items-center p-2 bg-slate-200">
+                            <h1 className="font-semibold text-lg">{currentFile}</h1>  <button className="p-2" onClick={() => setCurrentFile(null)}><i className="ri-close-fill"></i></button>  </div>
+                    )}
+
+                </div>
             </section>
         </main>
     );
