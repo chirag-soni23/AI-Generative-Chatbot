@@ -173,7 +173,7 @@ const Project = () => {
                             return (
                                 <div
                                     key={index}
-                                    className={`message flex flex-col max-w-full gap-1 p-2 rounded-md ${msg.sender === "ai" ? "max-w-full" : "max-w-44"} ${msg.sender === user._id ? "bg-slate-200 ml-auto" : "bg-slate-50"}`}
+                                    className={`message flex flex-col max-w-full gap-1 p-2 rounded-md ${msg.sender === "ai" ? "max-w-full" : "max-w-40"} ${msg.sender === user._id ? "bg-slate-200 ml-auto" : "bg-slate-50"}`}
                                 >
                                     <small className="opacity-65 text-xs">{senderEmail}</small>
                                     <div
