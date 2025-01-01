@@ -77,7 +77,7 @@ const Project = () => {
     const appendIncomingMessage = useCallback((messageObject) => {
         let formattedMessage = messageObject;
 
-        // Parse the "message" field if it is a JSON string
+        
         if (messageObject.sender === "ai" && typeof messageObject.message === "string") {
             try {
                 const parsed = JSON.parse(messageObject.message);
@@ -322,7 +322,7 @@ const Project = () => {
         {fileTree[currentFile].content ? (
             <SyntaxHighlighter
                 style={nightOwl}
-                language="javascript" // Or dynamically detect the language based on file extension
+                language="javascript" 
                 className="w-full h-full"
             >
                 {fileTree[currentFile].content}
