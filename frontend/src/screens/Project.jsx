@@ -32,6 +32,8 @@ const Project = () => {
     const { user } = useUser();
     const messageBox = useRef(null);
 
+    const [openFiles,setOpenFiles] = useState([]);
+
     const scrollToBottom = useCallback(() => {
         if (messageBox.current) {
             messageBox.current.scrollTop = messageBox.current.scrollHeight;
@@ -289,7 +291,11 @@ const Project = () => {
                     <div className="file-tree w-full">
 
                         {Object.keys(fileTree).map((file, index) => (
-                            <button onClick={() => setCurrentFile(file)} className="tree-element px-4 py-2 cursor-pointer flex items-center gap-2 bg-green-400 w-full ">
+                            <button onClick={() => {
+                                setCurrentFile(file),
+                                setOpenFiles([...openFiles,file])
+                            }
+                            } className="tree-element px-4 py-2 cursor-pointer flex items-center gap-2 bg-green-400 w-full ">
                                 <p className="cursor-pointer font-semibold tet-lg">{file}</p>
                             </button>
                         ))}
@@ -298,8 +304,12 @@ const Project = () => {
                 </div>
                 {currentFile && (
                 <div className="code-editor flex  flex-col flex-grow h-full">
-                   <div className="top">
-                    <h1 className="text-lg font-semibold p-2">{currentFile}</h1>
+                   <div className="top flex">
+                    {openFiles.map((file,index)=>{
+                        return <button className="open-file cursor-pointer p-2 px-4 items-center gap-2 bg-slate-50 w-fit" onClick={()=>setCurrentFile(file)}>
+                            <p className="font-semibold text-lg">{file}</p>
+                        </button>
+                    })}
                    </div>
                    <div className="bottom flex flex-grow">
                     {fileTree[currentFile] &&(
