@@ -11,16 +11,7 @@ import { toast } from 'react-hot-toast';
 const Project = () => {
     const location = useLocation();
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
-    const [fileTree, setFileTree] = useState({
-        "app.js": {
-            content: `const express = require('express');`
-        },
-        "package.json": {
-            content: `{
-            "name":"temp-server"
-            }`
-        }
-    })
+    const [fileTree, setFileTree] = useState({})
 
     const [currentFile, setCurrentFile] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -91,6 +82,11 @@ const Project = () => {
             try {
                 const parsed = JSON.parse(messageObject.message);
                 formattedMessage = { ...messageObject, message: parsed.text || messageObject.message };
+                console.log(JSON.parse(messageObject.message))
+                const message = JSON.parse(messageObject.message);
+                if(message.fileTree){
+                    setFileTree(message.fileTree);
+                }
             } catch (err) {
                 console.error("Failed to parse AI message:", err);
             }
