@@ -11,6 +11,18 @@ import { toast } from 'react-hot-toast';
 const Project = () => {
     const location = useLocation();
     const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+    const [fileTree, setFileTree] = useState({
+        "app.js":{
+            content:`const express = require('express');`
+        },
+        "package.json":{
+            content:`{
+            "name":"temp-server"
+            }`
+        }
+    })
+
+    const [currentFile,setCurrentFile] = useState(null); 
     const [isModalOpen, setIsModalOpen] = useState(false); 
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [project, setProject] = useState(location.state.project || {});
@@ -142,6 +154,7 @@ const Project = () => {
 
     return (
         <main className="h-screen w-screen flex flex-col md:flex-row">
+            {/* left section */}
             <section className="relative bg-slate-300 flex flex-col h-full md:w-1/3 lg:w-1/4">
                 <header className="flex justify-between items-center p-2 px-4 bg-slate-200">
                     <button className="flex gap-2" onClick={() => setIsModalOpen(true)}>
@@ -270,6 +283,27 @@ const Project = () => {
                         </div>
                     </div>
                 )}
+            </section>
+            {/* right section */}
+            <section className="right bg-red-500 flex-grow h-full flex">
+              <div className="explorer bg-blue-500  h-full max-w-64 min-w-52">
+                <div className="file-tree w-full">
+
+                   {Object.keys(fileTree).map((file,index)=>(
+                     <button onClick={()=>setCurrentFile(file)} className="tree-element px-4 py-2 cursor-pointer flex items-center gap-2 bg-green-400 w-full ">
+                     <p className="cursor-pointer font-semibold tet-lg">{file}</p>
+                 </button>
+                   ))}
+
+                    </div>
+                    </div> 
+              <div className="code-editor">
+{currentFile && (
+    <div className="code-editor-heder flex justify-between items-center p-2 bg-slate-200">
+<h1 className="font-semibold text-lg">{currentFile}</h1>  <button className="p-2" onClick={()=>setCurrentFile(null)}><i className="ri-close-fill"></i></button>  </div>
+)}
+                
+                </div> 
             </section>
         </main>
     );
