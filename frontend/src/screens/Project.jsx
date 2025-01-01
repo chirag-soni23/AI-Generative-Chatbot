@@ -70,8 +70,22 @@ const Project = () => {
     };
 
     const appendIncomingMessage = useCallback((messageObject) => {
-        setMessages((prevMessages) => [...prevMessages, messageObject]);
+        let formattedMessage = messageObject;
+    
+        // Parse the "message" field if it is a JSON string
+        if (messageObject.sender === "ai" && typeof messageObject.message === "string") {
+            try {
+                const parsed = JSON.parse(messageObject.message);
+                formattedMessage = { ...messageObject, message: parsed.text || messageObject.message };
+            } catch (err) {
+                console.error("Failed to parse AI message:", err);
+            }
+        }
+    
+        setMessages((prevMessages) => [...prevMessages, formattedMessage]);
     }, []);
+    
+    
 
     useEffect(() => {
         const socketInstance = initializeSocket(project._id);
