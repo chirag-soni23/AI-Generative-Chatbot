@@ -296,13 +296,22 @@ const Project = () => {
 
                     </div>
                 </div>
-                <div className="code-editor">
-                    {currentFile && (
-                        <div className="code-editor-heder flex justify-between items-center p-2 bg-slate-200">
-                            <h1 className="font-semibold text-lg">{currentFile}</h1>  <button className="p-2" onClick={() => setCurrentFile(null)}><i className="ri-close-fill"></i></button>  </div>
+                {currentFile && (
+                <div className="code-editor flex  flex-col flex-grow h-full">
+                   <div className="top">
+                    <h1 className="text-lg font-semibold p-2">{currentFile}</h1>
+                   </div>
+                   <div className="bottom flex flex-grow">
+                    {fileTree[currentFile] &&(
+                        <textarea className="w-full h-full p-4 bg-slate-50 outline-none" value={fileTree[currentFile].content} onChange={(e)=>{setFileTree({...fileTree,[currentFile]:{
+                            content:e.target.value
+                        }})}}>
+                            
+                        </textarea>
                     )}
+                   </div>
 
-                </div>
+                </div>)}
             </section>
         </main>
     );
