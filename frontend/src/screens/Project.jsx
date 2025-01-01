@@ -287,7 +287,7 @@ const Project = () => {
             </section>
             {/* right section */}
             <section className="right flex-grow h-full flex">
-    <div className="explorer bg-gray-300 h-full max-w-64 min-w-52">
+    <div className="explorer bg-gray-200 h-full max-w-64 min-w-52">
         <div className="file-tree w-full">
 
             {Object.keys(fileTree).map((file, index) => (
