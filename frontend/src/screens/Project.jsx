@@ -317,20 +317,33 @@ const Project = () => {
                 })}
             </div>
             <div className="bottom flex flex-grow">
-                {fileTree[currentFile] && (
-                    <textarea
-                        className="w-full h-full p-4 bg-slate-50 outline-none"
-                        value={fileTree[currentFile].content}
-                        onChange={(e) => {
-                            setFileTree({
-                                ...fileTree,
-                                [currentFile]: {
-                                    content: e.target.value,
-                                },
-                            });
-                        }}
-                    ></textarea>
-                )}
+            {fileTree[currentFile] && (
+    <div className="w-full h-full p-4 bg-slate-50 outline-none">
+        {fileTree[currentFile].content ? (
+            <SyntaxHighlighter
+                style={nightOwl}
+                language="javascript" // Or dynamically detect the language based on file extension
+                className="w-full h-full"
+            >
+                {fileTree[currentFile].content}
+            </SyntaxHighlighter>
+        ) : (
+            <textarea
+                className="w-full h-full p-4 bg-slate-50 outline-none"
+                value={fileTree[currentFile].content}
+                onChange={(e) => {
+                    setFileTree({
+                        ...fileTree,
+                        [currentFile]: {
+                            content: e.target.value,
+                        },
+                    });
+                }}
+            ></textarea>
+        )}
+    </div>
+)}
+
             </div>
         </div>
     )}
