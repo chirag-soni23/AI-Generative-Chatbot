@@ -7,6 +7,7 @@ import Markdown from "markdown-to-jsx";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { toast } from 'react-hot-toast';
+import {getWebContainer} from "../config/webContainer.js";
 
 const Project = () => {
     const location = useLocation();
@@ -24,6 +25,7 @@ const Project = () => {
     const messageBox = useRef(null);
 
     const [openFiles, setOpenFiles] = useState([]);
+    const [webContainer,setWebcontainer] = useState(null);
 
     const scrollToBottom = useCallback(() => {
         if (messageBox.current) {
@@ -102,6 +104,13 @@ const Project = () => {
         const socketInstance = initializeSocket(project._id);
 
         receiveMessage("project-message", appendIncomingMessage);
+
+        if(!webContainer){
+            getWebContainer().then(container=>{
+                setWebcontainer(container);
+                console.log("container started")
+            })
+        }
 
         const fetchProjectDetails = async () => {
             try {
