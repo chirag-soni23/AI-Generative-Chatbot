@@ -86,6 +86,7 @@ const Project = () => {
                 const message = JSON.parse(messageObject.message);
                 if (message.fileTree) {
                     setFileTree(message.fileTree);
+                    console.log(messageObject)
                 }
             } catch (err) {
                 console.error("Failed to parse AI message:", err);
@@ -233,8 +234,8 @@ const Project = () => {
                         </button>
                     </header>
                     <div className="flex flex-col p-4">
-                        {project?.users?.map((userItem) => (
-                            <div key={userItem._id} className="flex items-center gap-2">
+                        {project?.users?.map((userItem,index) => (
+                            <div key={index} className="flex items-center gap-2">
                                 <i className="ri-user-fill"></i>
                                 <span>{userItem.email}</span>
                             </div>
@@ -287,7 +288,7 @@ const Project = () => {
                     <div className="file-tree w-full">
 
                         {Object.keys(fileTree).map((file, index) => (
-                            <button
+                            <button key={index}
                                 onClick={() => {
                                     setCurrentFile(file);
                                     setOpenFiles([...new Set([...openFiles, file])]);
@@ -334,18 +335,18 @@ const Project = () => {
                         <div className="bottom flex flex-grow">
                             {fileTree[currentFile] && (
                                 <div className="w-full h-full p-4 bg-slate-50 outline-none">
-                                    {fileTree[currentFile].content ? (
+                                    {fileTree[currentFile].file.contents ? (
                                         <SyntaxHighlighter
                                             style={nightOwl}
                                             language="javascript"
                                             className="w-full h-full"
                                         >
-                                            {fileTree[currentFile].content}
+                                            {fileTree[currentFile].file.contents}
                                         </SyntaxHighlighter>
                                     ) : (
                                         <textarea
                                             className="w-full h-full p-4 bg-slate-50 outline-none"
-                                            value={fileTree[currentFile].content}
+                                            value={fileTree[currentFile].file.contents}
                                             onChange={(e) => {
                                                 setFileTree({
                                                     ...fileTree,
