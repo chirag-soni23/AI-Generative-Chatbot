@@ -342,17 +342,22 @@ const Project = () => {
                                 </div>
                             ))}</div>
                         <div className="actions flex gap-2">
-                            <button className="p-2 px-4 bg-slate-300 text-white" onClick={async () => {
-
-                                const lsProcess = await webContainer?.spawn('ls')
-                                await webContainer?.mount(fileTree)
-                                lsProcess.output.pipeTo(new WritableStream({
-                                    write(chunk) {
+                            <button className="p-2 px-4 bg-slate-300 text-white" onClick={async()=>{
+                                await webContainer.mount(fileTree)
+                                const installProcess = await webContainer.spawn("npm",["install"])
+                                installProcess.output.pipeTo(new WritableStream({
+                                    write(chunk){
+                                        console.log(chunk)
+                                    }
+                                }))
+                                const runProcess = await webContainer.spawn("npm",["start"])
+                                runProcess.output.pipeTo(new WritableStream({
+                                    write(chunk){
                                         console.log(chunk)
                                     }
                                 }))
                             }}>
-                                ls
+                                Run
                             </button>
                         </div>
                     </div>
