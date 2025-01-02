@@ -7,7 +7,7 @@ import Markdown from "markdown-to-jsx";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { toast } from 'react-hot-toast';
-import {getWebContainer} from "../config/webContainer.js";
+import { getWebContainer } from "../config/webContainer.js";
 
 const Project = () => {
     const location = useLocation();
@@ -25,7 +25,7 @@ const Project = () => {
     const messageBox = useRef(null);
 
     const [openFiles, setOpenFiles] = useState([]);
-    const [webContainer,setWebcontainer] = useState(null);
+    const [webContainer, setWebcontainer] = useState(null);
 
     const scrollToBottom = useCallback(() => {
         if (messageBox.current) {
@@ -105,8 +105,8 @@ const Project = () => {
 
         receiveMessage("project-message", appendIncomingMessage);
 
-        if(!webContainer){
-            getWebContainer().then(container=>{
+        if (!webContainer) {
+            getWebContainer().then(container => {
                 setWebcontainer(container);
                 console.log("container started")
             })
@@ -243,7 +243,7 @@ const Project = () => {
                         </button>
                     </header>
                     <div className="flex flex-col p-4">
-                        {project?.users?.map((userItem,index) => (
+                        {project?.users?.map((userItem, index) => (
                             <div key={index} className="flex items-center gap-2">
                                 <i className="ri-user-fill"></i>
                                 <span>{userItem.email}</span>
@@ -312,9 +312,10 @@ const Project = () => {
 
                     </div>
                 </div>
-                {currentFile && (
-                    <div className="code-editor flex flex-col flex-grow h-full">
-                        <div className="top flex">
+
+                <div className="code-editor flex flex-col flex-grow h-full">
+                    <div className="top justify-between w-full flex">
+                        <div className="files flex">
                             {openFiles.map((file, index) => (
                                 <div key={index} className="flex items-center  justify-center">
                                     <button
@@ -339,38 +340,52 @@ const Project = () => {
                                         <i class="ri-close-line"></i>
                                     </button>
                                 </div>
-                            ))}
-                        </div>
-                        <div className="bottom flex flex-grow">
-                            {fileTree[currentFile] && (
-                                <div className="w-full h-full p-4 bg-slate-50 outline-none">
-                                    {fileTree[currentFile].file.contents ? (
-                                        <SyntaxHighlighter
-                                            style={nightOwl}
-                                            language="javascript"
-                                            className="w-full h-full"
-                                        >
-                                            {fileTree[currentFile].file.contents}
-                                        </SyntaxHighlighter>
-                                    ) : (
-                                        <textarea
-                                            className="w-full h-full p-4 bg-slate-50 outline-none"
-                                            value={fileTree[currentFile].file.contents}
-                                            onChange={(e) => {
-                                                setFileTree({
-                                                    ...fileTree,
-                                                    [currentFile]: {
-                                                        content: e.target.value,
-                                                    },
-                                                });
-                                            }}
-                                        ></textarea>
-                                    )}
-                                </div>
-                            )}
+                            ))}</div>
+                        <div className="actions flex gap-2">
+                            <button className="p-2 px-4 bg-slate-300 text-white" onClick={async () => {
+
+                                const lsProcess = await webContainer?.spawn('ls')
+                                await webContainer?.mount(fileTree)
+                                lsProcess.output.pipeTo(new WritableStream({
+                                    write(chunk) {
+                                        console.log(chunk)
+                                    }
+                                }))
+                            }}>
+                                ls
+                            </button>
                         </div>
                     </div>
-                )}
+                    <div className="bottom flex flex-grow">
+                        {fileTree[currentFile] && (
+                            <div className="w-full h-full p-4 bg-slate-50 outline-none">
+                                {fileTree[currentFile].file.contents ? (
+                                    <SyntaxHighlighter
+                                        style={nightOwl}
+                                        language="javascript"
+                                        className="w-full h-full"
+                                    >
+                                        {fileTree[currentFile].file.contents}
+                                    </SyntaxHighlighter>
+                                ) : (
+                                    <textarea
+                                        className="w-full h-full p-4 bg-slate-50 outline-none"
+                                        value={fileTree[currentFile].file.contents}
+                                        onChange={(e) => {
+                                            setFileTree({
+                                                ...fileTree,
+                                                [currentFile]: {
+                                                    content: e.target.value,
+                                                },
+                                            });
+                                        }}
+                                    ></textarea>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
 
 
             </section>
