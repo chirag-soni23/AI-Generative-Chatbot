@@ -26,6 +26,7 @@ const Project = () => {
 
     const [openFiles, setOpenFiles] = useState([]);
     const [webContainer, setWebcontainer] = useState(null);
+    const [iframeURL,setIframURL] = useState(null);
 
     const scrollToBottom = useCallback(() => {
         if (messageBox.current) {
@@ -82,7 +83,7 @@ const Project = () => {
 
         if (messageObject.sender === "ai" && typeof messageObject.message === "string") {
             try {
-                const parsed = JSON.parse(messageObject.message);
+                const parsed = JSON.parse(formattedMessage.message);
                 formattedMessage = { ...messageObject, message: parsed.text || messageObject.message };
                 console.log(JSON.parse(messageObject.message))
                 const message = JSON.parse(messageObject.message);
@@ -161,7 +162,7 @@ const Project = () => {
 
 
     return (
-        <main className="h-screen w-screen flex flex-col md:flex-row">
+        <main className="h-screen w-screen flex flex-col overflow-auto md:flex-row">
             {/* left section */}
             <section className="relative bg-slate-300 flex flex-col h-full md:w-1/3 lg:w-1/4">
                 <header className="flex justify-between items-center p-2 px-4 bg-slate-200">
@@ -356,6 +357,10 @@ const Project = () => {
                                         console.log(chunk)
                                     }
                                 }))
+                                webContainer.on('server-ready',(port,url)=>{
+                                    console.log(port,url)
+                                    setIframURL(url)
+                                })
                             }}>
                                 Run
                             </button>
@@ -390,6 +395,7 @@ const Project = () => {
                         )}
                     </div>
                 </div>
+                {iframeURL && webContainer && <iframe src={iframeURL} className="w-1/2 h-full"></iframe>}
 
 
 
