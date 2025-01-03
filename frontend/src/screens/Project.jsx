@@ -395,7 +395,14 @@ const Project = () => {
                         )}
                     </div>
                 </div>
-                {iframeURL && webContainer && <iframe src={iframeURL} className="w-1/2 h-full"></iframe>}
+                {iframeURL && webContainer && 
+                <div className="flex min-w-96 flex-col h-full">
+                    <div className="address-bar">
+                        <input type="text" name="" id="" value={iframeURL} className="w-full p-2 px-4 bg-slate-200"onChange={(e)=>setIframURL(e.target.value)}/>
+                    </div>
+                    <iframe src={iframeURL} className="w-full h-full"></iframe>
+                </div>
+                    }
 
 
 
