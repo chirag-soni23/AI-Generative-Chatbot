@@ -26,7 +26,8 @@ const Project = () => {
 
     const [openFiles, setOpenFiles] = useState([]);
     const [webContainer, setWebcontainer] = useState(null);
-    const [iframeURL,setIframURL] = useState(null);
+    const [iframeURL, setIframURL] = useState(null);
+    const [runProcess, setRunProcess] = useState(null)
 
     const scrollToBottom = useCallback(() => {
         if (messageBox.current) {
@@ -343,25 +344,42 @@ const Project = () => {
                                 </div>
                             ))}</div>
                         <div className="actions flex gap-2">
-                            <button className="p-2 px-4 bg-slate-300 text-white" onClick={async()=>{
-                                await webContainer.mount(fileTree)
-                                const installProcess = await webContainer.spawn("npm",["install"])
-                                installProcess.output.pipeTo(new WritableStream({
-                                    write(chunk){
-                                        console.log(chunk)
+                            <button
+                                className="p-2 px-4 bg-slate-300 text-white"
+                                onClick={async () => {
+                                    await webContainer.mount(fileTree);
+
+                                    const installProcess = await webContainer.spawn("npm", ["install"]);
+                                    installProcess.output.pipeTo(
+                                        new WritableStream({
+                                            write(chunk) {
+                                                console.log(chunk);
+                                            },
+                                        })
+                                    );
+                                    if (runProcess) {
+                                        runProcess.kill();
                                     }
-                                }))
-                                const runProcess = await webContainer.spawn("npm",["start"])
-                                runProcess.output.pipeTo(new WritableStream({
-                                    write(chunk){
-                                        console.log(chunk)
-                                    }
-                                }))
-                                webContainer.on('server-ready',(port,url)=>{
-                                    console.log(port,url)
-                                    setIframURL(url)
-                                })
-                            }}>
+
+                                    const tempRunProcess = await webContainer.spawn("npm", ["start"]);
+                                    tempRunProcess.output.pipeTo(
+                                        new WritableStream({
+                                            write(chunk) {
+                                                console.log(chunk);
+                                            },
+                                        })
+                                    );
+
+
+                                    setRunProcess(tempRunProcess);
+
+
+                                    webContainer.on("server-ready", (port, url) => {
+                                        console.log(port, url);
+                                        setIframURL(url);
+                                    });
+                                }}
+                            >
                                 Run
                             </button>
                         </div>
@@ -395,14 +413,14 @@ const Project = () => {
                         )}
                     </div>
                 </div>
-                {iframeURL && webContainer && 
-                <div className="flex min-w-96 flex-col h-full">
-                    <div className="address-bar">
-                        <input type="text" name="" id="" value={iframeURL} className="w-full p-2 px-4 bg-slate-200"onChange={(e)=>setIframURL(e.target.value)}/>
+                {iframeURL && webContainer &&
+                    <div className="flex min-w-96 flex-col h-full">
+                        <div className="address-bar">
+                            <input type="text" name="" id="" value={iframeURL} className="w-full p-2 px-4 bg-slate-200" onChange={(e) => setIframURL(e.target.value)} />
+                        </div>
+                        <iframe src={iframeURL} className="w-full h-full"></iframe>
                     </div>
-                    <iframe src={iframeURL} className="w-full h-full"></iframe>
-                </div>
-                    }
+                }
 
 
 
